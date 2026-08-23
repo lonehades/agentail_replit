@@ -390,7 +390,7 @@ function Footer({ onStart, lang }: { onStart: () => void; lang: Language }) {
             <div><p className="font-mono text-[9px] uppercase tracking-[.18em] text-[var(--muted-ink)]">{lang === 'ko' ? '문의' : 'Say hello'}</p><div className="mt-4 flex flex-col gap-3 text-sm font-medium"><button type="button" onClick={onStart} data-testid="button-footer-contact" className="text-left hover:text-[var(--orange)]">{lang === 'ko' ? '대기 목록 등록' : 'Join the list'}</button><a href="mailto:hello@agentail.ai" data-testid="link-footer-email" className="hover:text-[var(--orange)]">hello@agentail.ai</a></div></div>
           </div>
         </div>
-        <div className="flex flex-col justify-between gap-3 pt-7 font-mono text-[9px] uppercase tracking-[.13em] text-[var(--muted-ink)] sm:flex-row"><span>© 2025 Agentail, Inc.</span><span>{lang === 'ko' ? '일할 여유를 조금 더 만들기 위해' : 'Made for work with a little more room'}</span></div>
+        <div className="flex flex-col justify-between gap-3 pt-7 font-mono text-[9px] uppercase tracking-[.13em] text-[var(--muted-ink)] sm:flex-row"><span>© 2026 Agentail, Inc.</span><span>{lang === 'ko' ? '일할 여유를 조금 더 만들기 위해' : 'Made for work with a little more room'}</span></div>
       </div>
     </footer>
   );
