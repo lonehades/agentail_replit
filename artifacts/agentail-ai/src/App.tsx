@@ -24,11 +24,16 @@ import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 import heroCats from '@assets/hero-cats_1787458002814.png';
 import catCafeMark from '@assets/catcafe_logo_black_1787458018808.png';
 import workspaceShot from '@assets/2-channel_1787458070225.png';
+import jarvisAgent from '@assets/jarvis-agent.png';
+import stocatAgent from '@assets/stocat-agent.png';
+import libcatAgent from '@assets/libcat-agent.png';
+import jarvisAndCats from '@assets/jarvis-and-cats.png';
 
 const queryClient = new QueryClient();
 
 const navItems = [
   { label: 'CatCafe.ai', href: '#catcafe' },
+  { label: 'Meet the agents', href: '#agents' },
   { label: 'How it works', href: '#model' },
   { label: 'Questions', href: '#faq' },
 ];
@@ -273,24 +278,45 @@ function Model() {
 
 function Roster() {
   const cats = [
-    { name: 'Mochi', role: 'Keeps the room warm', color: 'bg-[var(--yellow)]', copy: 'Turns half-formed thoughts into a clear next step.' },
-    { name: 'Miso', role: 'Finds what matters', color: 'bg-[var(--blue)]', copy: 'Reads across the noise and brings back the useful bit.' },
-    { name: 'Taro', role: 'Remembers the why', color: 'bg-[var(--lavender)]', copy: 'Keeps decisions and context close when the work gets busy.' },
+    {
+      name: 'Jarvis',
+      role: 'The central operator',
+      color: 'bg-[var(--yellow)]',
+      image: jarvisAgent,
+      copy: 'Sets priorities, routes work to the right agent, checks the quality, and turns the signal into a decision-ready report.',
+    },
+    {
+      name: 'StoCat',
+      role: 'The operations cat',
+      color: 'bg-[var(--blue)]',
+      image: stocatAgent,
+      copy: 'Keeps inventory and facilities in order: tracking movement, spotting risks, and preparing the next operational step.',
+    },
+    {
+      name: 'LibCat',
+      role: 'The knowledge cat',
+      color: 'bg-[var(--lavender)]',
+      image: libcatAgent,
+      copy: 'Turns protocols, FAQs, and trusted references into living workspace knowledge your team can actually use.',
+    },
   ];
   return (
-    <section className="bg-[var(--paper)]">
+    <section id="agents" className="bg-[var(--paper)]">
       <div className="mx-auto max-w-[1240px] px-5 py-24 sm:px-8 sm:py-32 lg:px-10 lg:py-36">
         <div className="flex flex-col justify-between gap-7 md:flex-row md:items-end">
-          <div className="reveal"><p className="font-mono text-[10px] uppercase tracking-[.2em] text-[var(--orange)]">04 / The roster</p><h2 className="mt-5 max-w-[630px] font-display text-[clamp(3.1rem,5.6vw,5.8rem)] leading-[.88] tracking-[-.05em]">Every cat has a <em>job to do.</em></h2></div>
-          <p className="max-w-[260px] text-[14px] leading-6 text-[var(--muted-ink)]">They are not mascots. They are a small, opinionated team for the work that keeps coming back.</p>
+          <div className="reveal"><p className="font-mono text-[10px] uppercase tracking-[.2em] text-[var(--orange)]">04 / The agent team</p><h2 className="mt-5 max-w-[680px] font-display text-[clamp(3.1rem,5.6vw,5.8rem)] leading-[.88] tracking-[-.05em]">Meet the cats<br /><em>behind the work.</em></h2></div>
+          <p className="max-w-[290px] text-[14px] leading-6 text-[var(--muted-ink)]">Every agent has a clear lane. Together, they turn a busy workspace into a team that knows what to do next.</p>
+        </div>
+        <div className="reveal delay-1 mt-12 overflow-hidden border border-[var(--line)] bg-[#fff]">
+          <img src={jarvisAndCats} alt="Jarvis and the CatCafe agent team working together" className="agent-team-banner block h-auto w-full" />
         </div>
         <div className="mt-14 grid gap-0 border-y border-[var(--line)] md:grid-cols-3">
           {cats.map((cat, index) => (
-            <article key={cat.name} className={`reveal delay-${index + 1} border-b border-[var(--line)] p-6 sm:p-8 md:border-b-0 md:border-r md:last:border-r-0 ${index === 1 ? 'md:mt-10' : index === 2 ? 'md:mt-20' : ''}`} data-testid={`card-cat-${cat.name.toLowerCase()}`}>
-              <div className={`flex h-16 w-16 items-center justify-center rounded-full ${cat.color}`}><img src={catCafeMark} alt="" className="h-11 w-11 object-contain mix-blend-multiply" /></div>
+            <article key={cat.name} className={`reveal delay-${index + 1} flex flex-col border-b border-[var(--line)] p-6 sm:p-8 md:border-b-0 md:border-r md:last:border-r-0`} data-testid={`card-cat-${cat.name.toLowerCase()}`}>
+              <div className={`agent-portrait flex aspect-square w-full items-end justify-center overflow-hidden ${cat.color}`}><img src={cat.image} alt={`${cat.name}, ${cat.role}`} className="h-full w-full object-cover object-top mix-blend-multiply" /></div>
               <p className="mt-9 font-mono text-[9px] uppercase tracking-[.15em] text-[var(--orange)]">{cat.role}</p>
               <h3 className="mt-2 font-display text-4xl tracking-[-.04em]">{cat.name}</h3>
-              <p className="mt-3 max-w-[230px] text-[14px] leading-6 text-[var(--muted-ink)]">{cat.copy}</p>
+              <p className="mt-3 max-w-[290px] flex-1 text-[14px] leading-6 text-[var(--muted-ink)]">{cat.copy}</p>
               <ArrowUpRight size={17} className="mt-10 text-[var(--muted-ink)]" />
             </article>
           ))}
@@ -347,9 +373,9 @@ function Footer({ onStart }: { onStart: () => void }) {
     <footer className="bg-[var(--paper)]">
       <div className="mx-auto max-w-[1240px] px-5 pb-9 pt-16 sm:px-8 lg:px-10">
         <div className="flex flex-col justify-between gap-12 border-b border-[var(--line)] pb-14 md:flex-row">
-          <div><AgentailLogo /><p className="mt-5 max-w-[280px] text-[14px] leading-6 text-[var(--muted-ink)]">Agentail is an automation company made of AI agents. CatCafe.ai is where we are starting.</p></div>
+         <div><AgentailLogo /><p className="mt-5 max-w-[280px] text-[14px] leading-6 text-[var(--muted-ink)]">Agentail is an automation company made of AI agents. CatCafe.ai is where we are starting.</p></div>
           <div className="flex gap-16">
-            <div><p className="font-mono text-[9px] uppercase tracking-[.18em] text-[var(--muted-ink)]">Explore</p><div className="mt-4 flex flex-col gap-3 text-sm font-medium"><a href="#catcafe" data-testid="link-footer-catcafe" className="hover:text-[var(--orange)]">CatCafe.ai</a><a href="#model" data-testid="link-footer-model" className="hover:text-[var(--orange)]">How it works</a><a href="#faq" data-testid="link-footer-faq" className="hover:text-[var(--orange)]">Questions</a></div></div>
+             <div><p className="font-mono text-[9px] uppercase tracking-[.18em] text-[var(--muted-ink)]">Explore</p><div className="mt-4 flex flex-col gap-3 text-sm font-medium"><a href="#catcafe" data-testid="link-footer-catcafe" className="hover:text-[var(--orange)]">CatCafe.ai</a><a href="#agents" data-testid="link-footer-agents" className="hover:text-[var(--orange)]">Meet the agents</a><a href="#model" data-testid="link-footer-model" className="hover:text-[var(--orange)]">How it works</a><a href="#faq" data-testid="link-footer-faq" className="hover:text-[var(--orange)]">Questions</a></div></div>
             <div><p className="font-mono text-[9px] uppercase tracking-[.18em] text-[var(--muted-ink)]">Say hello</p><div className="mt-4 flex flex-col gap-3 text-sm font-medium"><button type="button" onClick={onStart} data-testid="button-footer-contact" className="text-left hover:text-[var(--orange)]">Join the list</button><a href="mailto:hello@agentail.ai" data-testid="link-footer-email" className="hover:text-[var(--orange)]">hello@agentail.ai</a></div></div>
           </div>
         </div>
