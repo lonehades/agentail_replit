@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Agentail.ai"
+description = "A polished landing experience for Agentail.ai, an AI agent platform that helps people delegate repetitive work to capable digital teammates."
+version = "1.0.0"
+id = "artifacts/agentail-ai"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23556
+
+[services.development]
+run = "pnpm --filter @workspace/agentail-ai run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/agentail-ai", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/agentail-ai/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23556"
+BASE_PATH = "/"
