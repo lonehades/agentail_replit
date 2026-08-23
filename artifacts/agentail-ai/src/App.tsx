@@ -31,31 +31,35 @@ import jarvisAndCats from '@assets/jarvis-and-cats.png';
 
 const queryClient = new QueryClient();
 
-const navItems = [
-  { label: 'CatCafe.ai', href: '#catcafe' },
-  { label: 'Meet the agents', href: '#agents' },
-  { label: 'How it works', href: '#model' },
-  { label: 'Questions', href: '#faq' },
-];
+type Language = 'en' | 'ko';
 
-const faqItems = [
-  {
-    question: 'What is CatCafe.ai?',
-    answer: 'CatCafe.ai is a collaborative workspace where people and AI agents work together in shared channels. It brings conversations, useful context, and follow-through into one calm place.',
-  },
-  {
-    question: 'Why cats?',
-    answer: 'Cats are a reminder that good work does not need to look frantic. Our agents have distinct roles and personalities, but they are here to be useful: curious, focused, and quietly persistent.',
-  },
-  {
-    question: 'Is this another chat app?',
-    answer: 'It is more than a chat window. Channels give work a home, the wiki keeps context close, and agents can take a brief from a conversation through to a finished handoff.',
-  },
-  {
-    question: 'When can I try it?',
-    answer: 'CatCafe.ai is opening its workspace to a small group of early teams. Join the list and we will send an invitation as new seats become available.',
-  },
-];
+const navItems = (lang: Language) => lang === 'ko'
+  ? [
+      { label: 'CatCafe.ai', href: '#catcafe' },
+      { label: '에이전트 소개', href: '#agents' },
+      { label: '작동 방식', href: '#model' },
+      { label: '자주 묻는 질문', href: '#faq' },
+    ]
+  : [
+      { label: 'CatCafe.ai', href: '#catcafe' },
+      { label: 'Meet the agents', href: '#agents' },
+      { label: 'How it works', href: '#model' },
+      { label: 'Questions', href: '#faq' },
+    ];
+
+const faqItems = (lang: Language) => lang === 'ko'
+  ? [
+      { question: 'CatCafe.ai는 무엇인가요?', answer: 'CatCafe.ai는 사람과 AI 에이전트가 같은 채널에서 함께 일하는 협업 공간입니다. 대화, 필요한 맥락, 후속 실행을 하나의 차분한 공간에 모아줍니다.' },
+      { question: '왜 하필 고양이인가요?', answer: '좋은 일은 부산스럽게 보일 필요가 없다는 것을 고양이는 알려줍니다. 각 에이전트는 분명한 역할과 개성을 가지고 있지만, 호기심 있고 집중력 있게 실제로 도움이 되도록 만들어졌습니다.' },
+      { question: '또 하나의 채팅 앱인가요?', answer: '단순한 채팅창 이상입니다. 채널은 업무에 자리를 만들고, 위키는 맥락을 곁에 두며, 에이전트는 대화 속 요청을 실제 결과물과 인수인계까지 이어갑니다.' },
+      { question: '언제 사용해 볼 수 있나요?', answer: 'CatCafe.ai는 초기 팀을 대상으로 순차적으로 워크스페이스를 열고 있습니다. 대기 목록에 등록하면 자리가 열릴 때 초대장을 보내드립니다.' },
+    ]
+  : [
+      { question: 'What is CatCafe.ai?', answer: 'CatCafe.ai is a collaborative workspace where people and AI agents work together in shared channels. It brings conversations, useful context, and follow-through into one calm place.' },
+      { question: 'Why cats?', answer: 'Cats are a reminder that good work does not need to look frantic. Our agents have distinct roles and personalities, but they are here to be useful: curious, focused, and quietly persistent.' },
+      { question: 'Is this another chat app?', answer: 'It is more than a chat window. Channels give work a home, the wiki keeps context close, and agents can take a brief from a conversation through to a finished handoff.' },
+      { question: 'When can I try it?', answer: 'CatCafe.ai is opening its workspace to a small group of early teams. Join the list and we will send an invitation as new seats become available.' },
+    ];
 
 function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -70,7 +74,7 @@ function AgentailLogo({ light = false }: { light?: boolean }) {
   );
 }
 
-function Header({ onStart }: { onStart: () => void }) {
+function Header({ onStart, lang, onLanguageChange }: { onStart: () => void; lang: Language; onLanguageChange: (lang: Language) => void }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -80,6 +84,7 @@ function Header({ onStart }: { onStart: () => void }) {
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+  const items = navItems(lang);
 
   const navigate = (href: string) => {
     setMenuOpen(false);
@@ -91,16 +96,20 @@ function Header({ onStart }: { onStart: () => void }) {
       <div className="mx-auto flex h-[72px] max-w-[1240px] items-center justify-between px-5 sm:px-8 lg:px-10">
         <AgentailLogo />
         <nav className="hidden items-center gap-8 md:flex" aria-label="Primary navigation">
-          {navItems.map((item) => (
+           {items.map((item) => (
             <a key={item.href} href={item.href} onClick={() => navigate(item.href)} data-testid={`link-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`} className="text-[13px] font-medium text-[var(--muted-ink)] transition-colors hover:text-[var(--ink)]">
               {item.label}
             </a>
           ))}
         </nav>
         <div className="hidden items-center gap-4 md:flex">
-          <a href="https://catcafe.ai" target="_blank" rel="noreferrer" data-testid="link-header-catcafe" className="text-[13px] font-medium text-[var(--muted-ink)] hover:text-[var(--ink)]">Visit CatCafe</a>
+           <a href="https://catcafe.ai" target="_blank" rel="noreferrer" data-testid="link-header-catcafe" className="text-[13px] font-medium text-[var(--muted-ink)] hover:text-[var(--ink)]">{lang === 'ko' ? 'CatCafe 방문' : 'Visit CatCafe'}</a>
+           <div className="flex items-center rounded-full border border-[var(--line)] p-0.5" aria-label="Language">
+             <button type="button" onClick={() => onLanguageChange('en')} className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${lang === 'en' ? 'bg-[var(--ink)] text-[var(--paper)]' : 'text-[var(--muted-ink)]'}`}>EN</button>
+             <button type="button" onClick={() => onLanguageChange('ko')} className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${lang === 'ko' ? 'bg-[var(--ink)] text-[var(--paper)]' : 'text-[var(--muted-ink)]'}`}>한</button>
+           </div>
           <button type="button" onClick={onStart} data-testid="button-header-start" className="inline-flex items-center gap-2 rounded-full bg-[var(--ink)] px-5 py-2.5 text-[13px] font-semibold text-[var(--paper)] transition-transform hover:-translate-y-0.5">
-            Join the list <ArrowUpRight size={14} />
+             {lang === 'ko' ? '대기 목록 등록' : 'Join the list'} <ArrowUpRight size={14} />
           </button>
         </div>
         <button type="button" onClick={() => setMenuOpen((value) => !value)} aria-label={menuOpen ? 'Close menu' : 'Open menu'} data-testid="button-mobile-menu" className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--line)] md:hidden">
@@ -109,40 +118,41 @@ function Header({ onStart }: { onStart: () => void }) {
       </div>
       {menuOpen && (
         <div className="menu-panel mx-4 mb-4 rounded-2xl border border-[var(--line)] bg-[var(--paper)] p-3 shadow-xl md:hidden">
-          {navItems.map((item) => (
+           {items.map((item) => (
             <a key={item.href} href={item.href} onClick={() => navigate(item.href)} data-testid={`link-mobile-${item.label.toLowerCase().replace(/\s+/g, '-')}`} className="block rounded-xl px-4 py-3 text-sm font-medium hover:bg-[var(--paper-deep)]">{item.label}</a>
           ))}
-          <a href="https://catcafe.ai" target="_blank" rel="noreferrer" data-testid="link-mobile-catcafe" className="mt-1 block rounded-xl px-4 py-3 text-sm font-medium hover:bg-[var(--paper-deep)]">Visit CatCafe.ai</a>
-          <button type="button" onClick={() => { setMenuOpen(false); onStart(); }} data-testid="button-mobile-start" className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--ink)] px-4 py-3 text-sm font-semibold text-[var(--paper)]">Join the list <ArrowRight size={15} /></button>
+           <a href="https://catcafe.ai" target="_blank" rel="noreferrer" data-testid="link-mobile-catcafe" className="mt-1 block rounded-xl px-4 py-3 text-sm font-medium hover:bg-[var(--paper-deep)]">{lang === 'ko' ? 'CatCafe.ai 방문' : 'Visit CatCafe.ai'}</a>
+           <div className="mt-2 flex gap-2 px-4 py-2"><button type="button" onClick={() => onLanguageChange('en')} className={`rounded-full border px-3 py-1 text-xs ${lang === 'en' ? 'bg-[var(--ink)] text-[var(--paper)]' : 'border-[var(--line)]'}`}>English</button><button type="button" onClick={() => onLanguageChange('ko')} className={`rounded-full border px-3 py-1 text-xs ${lang === 'ko' ? 'bg-[var(--ink)] text-[var(--paper)]' : 'border-[var(--line)]'}`}>한국어</button></div>
+           <button type="button" onClick={() => { setMenuOpen(false); onStart(); }} data-testid="button-mobile-start" className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--ink)] px-4 py-3 text-sm font-semibold text-[var(--paper)]">{lang === 'ko' ? '대기 목록 등록' : 'Join the list'} <ArrowRight size={15} /></button>
         </div>
       )}
     </header>
   );
 }
 
-function Hero({ onStart }: { onStart: () => void }) {
+function Hero({ onStart, lang }: { onStart: () => void; lang: Language }) {
   return (
     <section id="top" className="relative overflow-hidden bg-[var(--paper)] pt-[72px]">
       <div className="mx-auto grid max-w-[1240px] gap-7 px-5 pb-8 pt-16 sm:px-8 sm:pt-24 lg:grid-cols-[.88fr_1.12fr] lg:gap-10 lg:px-10 lg:pb-14 lg:pt-28">
         <div className="relative z-10 flex flex-col justify-center reveal">
-          <p className="font-mono text-[10px] uppercase tracking-[.2em] text-[var(--orange)]">Agentail presents</p>
-          <h1 className="mt-6 max-w-[560px] font-display text-[clamp(4rem,8.2vw,7.7rem)] leading-[.83] tracking-[-.055em]">
-            Work<br /><em>with</em><br />your cats.
+           <p className="font-mono text-[10px] uppercase tracking-[.2em] text-[var(--orange)]">{lang === 'ko' ? 'Agentail이 선보입니다' : 'Agentail presents'}</p>
+           <h1 className="mt-6 max-w-[560px] font-display text-[clamp(4rem,8.2vw,7.7rem)] leading-[.83] tracking-[-.055em]">
+             {lang === 'ko' ? <>고양이와<br /><em>함께</em><br />일하세요.</> : <>Work<br /><em>with</em><br />your cats.</>}
           </h1>
           <p className="mt-8 max-w-[410px] text-[16px] leading-7 text-[var(--muted-ink)] sm:text-[17px]">
-            Agentail is building a new kind of automation company: one made of AI agents. Our first workspace is CatCafe.ai.
+             {lang === 'ko' ? 'Agentail은 AI 에이전트로 이루어진 새로운 자동화 회사를 만들어갑니다. 첫 번째 워크스페이스는 CatCafe.ai입니다.' : 'Agentail is building a new kind of automation company: one made of AI agents. Our first workspace is CatCafe.ai.'}
           </p>
           <div className="mt-9 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
             <button type="button" onClick={onStart} data-testid="button-hero-start" className="link-arrow inline-flex items-center gap-3 rounded-full bg-[var(--orange)] px-6 py-3.5 text-sm font-semibold text-[var(--ink)] transition-transform hover:-translate-y-1">
-              Get an invitation <ArrowRight size={16} />
+               {lang === 'ko' ? '초대 받기' : 'Get an invitation'} <ArrowRight size={16} />
             </button>
             <a href="#catcafe" onClick={() => scrollToId('catcafe')} data-testid="link-hero-product" className="link-arrow inline-flex items-center gap-2 border-b border-[var(--line)] pb-1 text-sm font-semibold">
-              Meet CatCafe.ai <ArrowDownRight size={15} />
+               {lang === 'ko' ? 'CatCafe.ai 만나보기' : 'Meet CatCafe.ai'} <ArrowDownRight size={15} />
             </a>
           </div>
           <div className="mt-12 flex items-center gap-3 border-t border-[var(--line)] pt-4">
             <span className="h-2 w-2 rounded-full bg-[#52a76d]" />
-            <span className="font-mono text-[9px] uppercase tracking-[.15em] text-[var(--muted-ink)]">Private beta · opening soon</span>
+             <span className="font-mono text-[9px] uppercase tracking-[.15em] text-[var(--muted-ink)]">{lang === 'ko' ? '프라이빗 베타 · 곧 오픈' : 'Private beta · opening soon'}</span>
           </div>
         </div>
         <div className="relative reveal delay-1">
@@ -162,9 +172,9 @@ function Hero({ onStart }: { onStart: () => void }) {
       </div>
       <div className="border-y border-[var(--line)]">
         <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-8 lg:px-10">
-          <span className="font-mono text-[9px] uppercase tracking-[.18em] text-[var(--muted-ink)]">A workspace for</span>
-          <div className="flex flex-wrap gap-x-7 gap-y-2 text-[13px] font-medium text-[var(--muted-ink)]">
-            <span>Channels with a point</span><span>Agents with roles</span><span>Context that sticks</span>
+           <span className="font-mono text-[9px] uppercase tracking-[.18em] text-[var(--muted-ink)]">{lang === 'ko' ? '이런 팀을 위한 공간' : 'A workspace for'}</span>
+           <div className="flex flex-wrap gap-x-7 gap-y-2 text-[13px] font-medium text-[var(--muted-ink)]">
+             {lang === 'ko' ? <><span>목적이 분명한 채널</span><span>역할이 있는 에이전트</span><span>계속 이어지는 맥락</span></> : <><span>Channels with a point</span><span>Agents with roles</span><span>Context that sticks</span></>}
           </div>
         </div>
       </div>
@@ -172,19 +182,19 @@ function Hero({ onStart }: { onStart: () => void }) {
   );
 }
 
-function Intro() {
+function Intro({ lang }: { lang: Language }) {
   return (
     <section id="mission" className="bg-[var(--paper)]">
       <div className="mx-auto grid max-w-[1240px] gap-14 px-5 py-24 sm:px-8 sm:py-32 lg:grid-cols-[.7fr_1.3fr] lg:gap-24 lg:px-10 lg:py-40">
         <div className="reveal">
-          <p className="font-mono text-[10px] uppercase tracking-[.2em] text-[var(--orange)]">01 / The idea</p>
+           <p className="font-mono text-[10px] uppercase tracking-[.2em] text-[var(--orange)]">{lang === 'ko' ? '01 / 우리가 만드는 것' : '01 / The idea'}</p>
         </div>
         <div className="reveal delay-1">
           <h2 className="max-w-[790px] font-display text-[clamp(3rem,6vw,6.4rem)] leading-[.88] tracking-[-.05em]">
-            The best work is a conversation between <em>people, context, and action.</em>
+             {lang === 'ko' ? <>가장 좋은 일은 <em>사람, 맥락, 실행</em>이 나누는 대화입니다.</> : <>The best work is a conversation between <em>people, context, and action.</em></>}
           </h2>
           <p className="mt-9 max-w-[570px] text-[17px] leading-8 text-[var(--muted-ink)]">
-            Agentail makes AI agents feel less like a tool you open and more like a team you can return to. CatCafe is where that idea comes to life: shared rooms, clear roles, and a memory that gets better with every handoff.
+             {lang === 'ko' ? 'Agentail은 AI 에이전트를 필요할 때 여는 도구가 아니라 언제든 돌아갈 수 있는 팀처럼 만듭니다. CatCafe는 공유 채널, 명확한 역할, 인수인계할수록 좋아지는 기억으로 그 생각을 현실로 만듭니다.' : 'Agentail makes AI agents feel less like a tool you open and more like a team you can return to. CatCafe is where that idea comes to life: shared rooms, clear roles, and a memory that gets better with every handoff.'}
           </p>
         </div>
       </div>
@@ -192,29 +202,29 @@ function Intro() {
   );
 }
 
-function ProductSection() {
+function ProductSection({ lang }: { lang: Language }) {
   return (
     <section id="catcafe" className="bg-[var(--paper-deep)]">
       <div className="mx-auto max-w-[1240px] px-5 py-20 sm:px-8 sm:py-28 lg:px-10 lg:py-36">
         <div className="mb-14 flex flex-col justify-between gap-7 md:flex-row md:items-end">
           <div className="reveal">
-            <p className="font-mono text-[10px] uppercase tracking-[.2em] text-[var(--orange)]">02 / The flagship</p>
+             <p className="font-mono text-[10px] uppercase tracking-[.2em] text-[var(--orange)]">{lang === 'ko' ? '02 / 대표 제품' : '02 / The flagship'}</p>
             <div className="mt-5 flex items-center gap-4">
               <img src={catCafeMark} alt="CatCafe" className="h-14 w-14 object-contain mix-blend-multiply" />
               <h2 className="font-display text-[clamp(3.5rem,6vw,6rem)] leading-[.85] tracking-[-.055em]">CatCafe.ai</h2>
             </div>
           </div>
           <a href="https://catcafe.ai" target="_blank" rel="noreferrer" data-testid="link-product-visit" className="link-arrow inline-flex items-center gap-2 self-start border-b border-[var(--ink)] pb-2 text-sm font-semibold md:self-end">
-            Enter the workspace <ArrowUpRight size={15} />
+             {lang === 'ko' ? '워크스페이스 입장' : 'Enter the workspace'} <ArrowUpRight size={15} />
           </a>
         </div>
         <div className="grid items-center gap-12 lg:grid-cols-[.72fr_1.28fr] lg:gap-20">
           <div className="reveal">
-            <p className="max-w-[400px] text-[19px] leading-8">A place where humans and cat agents can do the work together — without losing the thread.</p>
+             <p className="max-w-[400px] text-[19px] leading-8">{lang === 'ko' ? '사람과 고양이 에이전트가 흐름을 놓치지 않고 함께 일하는 공간입니다.' : 'A place where humans and cat agents can do the work together — without losing the thread.'}</p>
             <div className="mt-12 space-y-7 border-t border-[var(--line)] pt-6">
-              <ProductPoint icon={<Hash size={18} />} title="Channels" copy="Give every project, question, and recurring rhythm a room of its own." />
-              <ProductPoint icon={<Users size={18} />} title="Agents" copy="Invite the right cat into the conversation. Each one brings a different way of helping." />
-              <ProductPoint icon={<BookOpen size={18} />} title="Wiki & context" copy="Keep decisions, references, and the why behind the work close at hand." />
+               <ProductPoint icon={<Hash size={18} />} title={lang === 'ko' ? '채널' : 'Channels'} copy={lang === 'ko' ? '모든 프로젝트와 질문, 반복되는 업무에 자기만의 공간을 만들어주세요.' : 'Give every project, question, and recurring rhythm a room of its own.'} />
+               <ProductPoint icon={<Users size={18} />} title={lang === 'ko' ? '에이전트' : 'Agents'} copy={lang === 'ko' ? '대화에 알맞은 고양이를 초대하세요. 각자 다른 방식으로 일을 도와줍니다.' : 'Invite the right cat into the conversation. Each one brings a different way of helping.'} />
+               <ProductPoint icon={<BookOpen size={18} />} title={lang === 'ko' ? '위키와 맥락' : 'Wiki & context'} copy={lang === 'ko' ? '결정, 참고자료, 그리고 일의 이유를 언제나 가까이에 두세요.' : 'Keep decisions, references, and the why behind the work close at hand.'} />
             </div>
           </div>
           <div className="reveal delay-1">
