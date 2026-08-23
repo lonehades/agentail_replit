@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Noto+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @plugin "@tailwindcss/typography";
@@ -117,6 +117,24 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 }
 .font-display { font-family: var(--app-font-serif); }
 .font-mono { font-family: var(--app-font-mono); }
+main[lang="ko"] .font-display {
+  font-family: 'Noto Serif KR', 'Apple SD Gothic Neo', 'Malgun Gothic', serif;
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.075em;
+  word-break: keep-all;
+}
+main[lang="ko"] {
+  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+}
+main[lang="ko"] .ko-hero-title {
+  font-size: clamp(3.25rem, 7vw, 6.7rem) !important;
+  line-height: 1.02;
+  letter-spacing: -0.085em;
+}
+main[lang="ko"] .ko-section-title {
+  line-height: 1.08;
+}
 
 .site-header {
   transition: background-color 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
