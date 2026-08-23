@@ -135,6 +135,11 @@ main[lang="ko"] .ko-hero-title {
 main[lang="ko"] .ko-section-title {
   line-height: 1.08;
 }
+main[lang="ko"] em {
+  font-style: normal;
+  font-weight: inherit;
+  color: inherit;
+}
 
 .site-header {
   transition: background-color 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
