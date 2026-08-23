@@ -254,20 +254,20 @@ function ProductPoint({ icon, title, copy }: { icon: ReactNode; title: string; c
   );
 }
 
-function Model() {
+function Model({ lang }: { lang: Language }) {
   const steps = [
-    { number: '01', title: 'Open a room', copy: 'A channel gives the work a home, so the latest thought is never buried in someone’s inbox.', icon: <MessageCircle size={19} /> },
-    { number: '02', title: 'Bring in a cat', copy: 'Agents join with a role, a point of view, and the context they need to be genuinely helpful.', icon: <Sparkles size={19} /> },
-    { number: '03', title: 'Keep the signal', copy: 'The useful answer becomes part of the workspace. Your team moves forward without starting over.', icon: <CircleDot size={19} /> },
+    { number: '01', title: lang === 'ko' ? '방을 여세요' : 'Open a room', copy: lang === 'ko' ? '채널이 업무의 자리가 되어 최신 생각이 누군가의 받은편지함 속에 묻히지 않습니다.' : 'A channel gives the work a home, so the latest thought is never buried in someone’s inbox.', icon: <MessageCircle size={19} /> },
+    { number: '02', title: lang === 'ko' ? '고양이를 부르세요' : 'Bring in a cat', copy: lang === 'ko' ? '에이전트는 역할과 관점, 그리고 제대로 돕는 데 필요한 맥락을 가지고 합류합니다.' : 'Agents join with a role, a point of view, and the context they need to be genuinely helpful.', icon: <Sparkles size={19} /> },
+    { number: '03', title: lang === 'ko' ? '신호를 남기세요' : 'Keep the signal', copy: lang === 'ko' ? '유용한 답변은 워크스페이스의 일부가 됩니다. 팀은 처음부터 다시 시작하지 않고 앞으로 나아갑니다.' : 'The useful answer becomes part of the workspace. Your team moves forward without starting over.', icon: <CircleDot size={19} /> },
   ];
   return (
     <section id="model" className="bg-[var(--ink)] text-[var(--paper)]">
       <div className="mx-auto max-w-[1240px] px-5 py-24 sm:px-8 sm:py-32 lg:px-10 lg:py-40">
         <div className="grid gap-14 lg:grid-cols-[.82fr_1.18fr] lg:gap-24">
           <div className="reveal">
-            <p className="font-mono text-[10px] uppercase tracking-[.2em] text-[var(--yellow)]">03 / The model</p>
-            <h2 className="mt-6 max-w-[520px] font-display text-[clamp(3.2rem,6vw,6.4rem)] leading-[.86] tracking-[-.05em]">Think of it as a <em>shared table.</em></h2>
-            <p className="mt-8 max-w-[420px] text-[16px] leading-7 text-[var(--paper)]/60">Not a bot waiting for commands. Not a feed asking for attention. A workspace where the right thing is always within reach.</p>
+            <p className="font-mono text-[10px] uppercase tracking-[.2em] text-[var(--yellow)]">{lang === 'ko' ? '03 / 작동 방식' : '03 / The model'}</p>
+            <h2 className="mt-6 max-w-[520px] font-display text-[clamp(3.2rem,6vw,6.4rem)] leading-[.86] tracking-[-.05em]">{lang === 'ko' ? <>함께 쓰는<br /><em>테이블이라고</em><br />생각하세요.</> : <>Think of it as a <em>shared table.</em></>}</h2>
+            <p className="mt-8 max-w-[420px] text-[16px] leading-7 text-[var(--paper)]/60">{lang === 'ko' ? '명령을 기다리는 봇도, 관심을 요구하는 피드도 아닙니다. 필요한 일이 언제나 손 닿는 곳에 있는 워크스페이스입니다.' : 'Not a bot waiting for commands. Not a feed asking for attention. A workspace where the right thing is always within reach.'}</p>
           </div>
           <div className="reveal delay-1">
             {steps.map((step) => (
@@ -286,36 +286,36 @@ function Model() {
   );
 }
 
-function Roster() {
+function Roster({ lang }: { lang: Language }) {
   const cats = [
     {
       name: 'Jarvis',
-      role: 'The central operator',
+      role: lang === 'ko' ? '중앙 운영 에이전트' : 'The central operator',
       color: 'bg-[var(--yellow)]',
       image: jarvisAgent,
-      copy: 'Sets priorities, routes work to the right agent, checks the quality, and turns the signal into a decision-ready report.',
+      copy: lang === 'ko' ? '우선순위를 정하고, 알맞은 에이전트에게 일을 배분하며, 품질을 확인하고, 판단에 바로 쓸 수 있는 보고서로 정리합니다.' : 'Sets priorities, routes work to the right agent, checks the quality, and turns the signal into a decision-ready report.',
     },
     {
       name: 'StoCat',
-      role: 'The operations cat',
+      role: lang === 'ko' ? '운영 에이전트' : 'The operations cat',
       color: 'bg-[var(--blue)]',
       image: stocatAgent,
-      copy: 'Keeps inventory and facilities in order: tracking movement, spotting risks, and preparing the next operational step.',
+      copy: lang === 'ko' ? '재고와 시설의 흐름을 관리합니다. 이동을 추적하고, 위험을 발견하며, 다음 운영 단계를 준비합니다.' : 'Keeps inventory and facilities in order: tracking movement, spotting risks, and preparing the next operational step.',
     },
     {
       name: 'LibCat',
-      role: 'The knowledge cat',
+      role: lang === 'ko' ? '지식 에이전트' : 'The knowledge cat',
       color: 'bg-[var(--lavender)]',
       image: libcatAgent,
-      copy: 'Turns protocols, FAQs, and trusted references into living workspace knowledge your team can actually use.',
+      copy: lang === 'ko' ? '프로토콜, FAQ, 신뢰할 수 있는 참고자료를 팀이 실제로 활용할 수 있는 살아 있는 워크스페이스 지식으로 바꿉니다.' : 'Turns protocols, FAQs, and trusted references into living workspace knowledge your team can actually use.',
     },
   ];
   return (
     <section id="agents" className="bg-[var(--paper)]">
       <div className="mx-auto max-w-[1240px] px-5 py-24 sm:px-8 sm:py-32 lg:px-10 lg:py-36">
         <div className="flex flex-col justify-between gap-7 md:flex-row md:items-end">
-          <div className="reveal"><p className="font-mono text-[10px] uppercase tracking-[.2em] text-[var(--orange)]">04 / The agent team</p><h2 className="mt-5 max-w-[680px] font-display text-[clamp(3.1rem,5.6vw,5.8rem)] leading-[.88] tracking-[-.05em]">Meet the cats<br /><em>behind the work.</em></h2></div>
-          <p className="max-w-[290px] text-[14px] leading-6 text-[var(--muted-ink)]">Every agent has a clear lane. Together, they turn a busy workspace into a team that knows what to do next.</p>
+          <div className="reveal"><p className="font-mono text-[10px] uppercase tracking-[.2em] text-[var(--orange)]">{lang === 'ko' ? '04 / 에이전트 팀' : '04 / The agent team'}</p><h2 className="mt-5 max-w-[680px] font-display text-[clamp(3.1rem,5.6vw,5.8rem)] leading-[.88] tracking-[-.05em]">{lang === 'ko' ? <>일을 움직이는<br /><em>고양이들을 만나보세요.</em></> : <>Meet the cats<br /><em>behind the work.</em></>}</h2></div>
+          <p className="max-w-[290px] text-[14px] leading-6 text-[var(--muted-ink)]">{lang === 'ko' ? '모든 에이전트는 분명한 전문 영역을 가집니다. 함께라면 복잡한 워크스페이스도 다음 할 일을 아는 팀으로 바뀝니다.' : 'Every agent has a clear lane. Together, they turn a busy workspace into a team that knows what to do next.'}</p>
         </div>
         <div className="reveal delay-1 mt-12 overflow-hidden border border-[var(--line)] bg-[#fff]">
           <img src={jarvisAndCats} alt="Jarvis and the CatCafe agent team working together" className="agent-team-banner block h-auto w-full" />
@@ -336,14 +336,15 @@ function Roster() {
   );
 }
 
-function FAQ() {
+function FAQ({ lang }: { lang: Language }) {
   const [open, setOpen] = useState(0);
+  const items = faqItems(lang);
   return (
     <section id="faq" className="bg-[var(--paper-deep)]">
       <div className="mx-auto grid max-w-[1240px] gap-14 px-5 py-24 sm:px-8 sm:py-32 lg:grid-cols-[.7fr_1.3fr] lg:gap-24 lg:px-10 lg:py-36">
-        <div className="reveal"><p className="font-mono text-[10px] uppercase tracking-[.2em] text-[var(--orange)]">05 / Good questions</p><h2 className="mt-5 max-w-[410px] font-display text-[clamp(3.2rem,5vw,5.8rem)] leading-[.87] tracking-[-.05em]">No mystery.<br /><em>Just cats.</em></h2></div>
+        <div className="reveal"><p className="font-mono text-[10px] uppercase tracking-[.2em] text-[var(--orange)]">{lang === 'ko' ? '05 / 자주 묻는 질문' : '05 / Good questions'}</p><h2 className="mt-5 max-w-[410px] font-display text-[clamp(3.2rem,5vw,5.8rem)] leading-[.87] tracking-[-.05em]">{lang === 'ko' ? <>복잡할 것 없어요.<br /><em>그저 고양이들입니다.</em></> : <>No mystery.<br /><em>Just cats.</em></>}</h2></div>
         <div className="reveal delay-1 border-t border-[var(--line)]">
-          {faqItems.map((item, index) => {
+          {items.map((item, index) => {
             const isOpen = open === index;
             return (
               <div key={item.question} className="border-b border-[var(--line)]">
@@ -361,41 +362,41 @@ function FAQ() {
   );
 }
 
-function FinalCTA({ onStart }: { onStart: () => void }) {
+function FinalCTA({ onStart, lang }: { onStart: () => void; lang: Language }) {
   return (
     <section className="bg-[var(--paper)] px-5 py-5 sm:px-8 lg:px-10">
       <div className="relative mx-auto max-w-[1240px] overflow-hidden bg-[var(--orange)] px-6 py-20 sm:px-12 sm:py-28">
         <div className="absolute -right-20 -top-28 h-72 w-72 rounded-full border-[38px] border-[var(--yellow)]/60" />
         <div className="absolute -bottom-28 -left-20 h-64 w-64 rounded-full border-[30px] border-[var(--ink)]/10" />
         <div className="relative max-w-[670px]">
-          <p className="font-mono text-[10px] uppercase tracking-[.2em] text-[var(--ink)]/60">The table is getting bigger</p>
-          <h2 className="mt-5 font-display text-[clamp(3.5rem,7vw,7rem)] leading-[.83] tracking-[-.055em]">Pull up a chair.</h2>
-          <p className="mt-7 max-w-[430px] text-[16px] leading-7 text-[var(--ink)]/70">Join the early list for CatCafe.ai and be part of the first group working alongside the cats.</p>
-          <button type="button" onClick={onStart} data-testid="button-final-start" className="mt-9 inline-flex items-center gap-3 rounded-full bg-[var(--ink)] px-6 py-3.5 text-sm font-semibold text-[var(--paper)] transition-transform hover:-translate-y-1">Request an invite <ArrowRight size={16} /></button>
+          <p className="font-mono text-[10px] uppercase tracking-[.2em] text-[var(--ink)]/60">{lang === 'ko' ? '테이블이 커지고 있습니다' : 'The table is getting bigger'}</p>
+          <h2 className="mt-5 font-display text-[clamp(3.5rem,7vw,7rem)] leading-[.83] tracking-[-.055em]">{lang === 'ko' ? <>함께 앉으세요.</> : 'Pull up a chair.'}</h2>
+          <p className="mt-7 max-w-[430px] text-[16px] leading-7 text-[var(--ink)]/70">{lang === 'ko' ? 'CatCafe.ai 초기 대기 목록에 등록하고, 고양이들과 함께 일할 첫 번째 팀이 되어보세요.' : 'Join the early list for CatCafe.ai and be part of the first group working alongside the cats.'}</p>
+          <button type="button" onClick={onStart} data-testid="button-final-start" className="mt-9 inline-flex items-center gap-3 rounded-full bg-[var(--ink)] px-6 py-3.5 text-sm font-semibold text-[var(--paper)] transition-transform hover:-translate-y-1">{lang === 'ko' ? '초대 신청하기' : 'Request an invite'} <ArrowRight size={16} /></button>
         </div>
       </div>
     </section>
   );
 }
 
-function Footer({ onStart }: { onStart: () => void }) {
+function Footer({ onStart, lang }: { onStart: () => void; lang: Language }) {
   return (
     <footer className="bg-[var(--paper)]">
       <div className="mx-auto max-w-[1240px] px-5 pb-9 pt-16 sm:px-8 lg:px-10">
         <div className="flex flex-col justify-between gap-12 border-b border-[var(--line)] pb-14 md:flex-row">
-         <div><AgentailLogo /><p className="mt-5 max-w-[280px] text-[14px] leading-6 text-[var(--muted-ink)]">Agentail is an automation company made of AI agents. CatCafe.ai is where we are starting.</p></div>
+         <div><AgentailLogo /><p className="mt-5 max-w-[280px] text-[14px] leading-6 text-[var(--muted-ink)]">{lang === 'ko' ? 'Agentail은 AI 에이전트로 이루어진 자동화 회사입니다. CatCafe.ai에서 시작합니다.' : 'Agentail is an automation company made of AI agents. CatCafe.ai is where we are starting.'}</p></div>
           <div className="flex gap-16">
-             <div><p className="font-mono text-[9px] uppercase tracking-[.18em] text-[var(--muted-ink)]">Explore</p><div className="mt-4 flex flex-col gap-3 text-sm font-medium"><a href="#catcafe" data-testid="link-footer-catcafe" className="hover:text-[var(--orange)]">CatCafe.ai</a><a href="#agents" data-testid="link-footer-agents" className="hover:text-[var(--orange)]">Meet the agents</a><a href="#model" data-testid="link-footer-model" className="hover:text-[var(--orange)]">How it works</a><a href="#faq" data-testid="link-footer-faq" className="hover:text-[var(--orange)]">Questions</a></div></div>
-            <div><p className="font-mono text-[9px] uppercase tracking-[.18em] text-[var(--muted-ink)]">Say hello</p><div className="mt-4 flex flex-col gap-3 text-sm font-medium"><button type="button" onClick={onStart} data-testid="button-footer-contact" className="text-left hover:text-[var(--orange)]">Join the list</button><a href="mailto:hello@agentail.ai" data-testid="link-footer-email" className="hover:text-[var(--orange)]">hello@agentail.ai</a></div></div>
+             <div><p className="font-mono text-[9px] uppercase tracking-[.18em] text-[var(--muted-ink)]">{lang === 'ko' ? '둘러보기' : 'Explore'}</p><div className="mt-4 flex flex-col gap-3 text-sm font-medium"><a href="#catcafe" data-testid="link-footer-catcafe" className="hover:text-[var(--orange)]">CatCafe.ai</a><a href="#agents" data-testid="link-footer-agents" className="hover:text-[var(--orange)]">{lang === 'ko' ? '에이전트 소개' : 'Meet the agents'}</a><a href="#model" data-testid="link-footer-model" className="hover:text-[var(--orange)]">{lang === 'ko' ? '작동 방식' : 'How it works'}</a><a href="#faq" data-testid="link-footer-faq" className="hover:text-[var(--orange)]">{lang === 'ko' ? '자주 묻는 질문' : 'Questions'}</a></div></div>
+            <div><p className="font-mono text-[9px] uppercase tracking-[.18em] text-[var(--muted-ink)]">{lang === 'ko' ? '문의' : 'Say hello'}</p><div className="mt-4 flex flex-col gap-3 text-sm font-medium"><button type="button" onClick={onStart} data-testid="button-footer-contact" className="text-left hover:text-[var(--orange)]">{lang === 'ko' ? '대기 목록 등록' : 'Join the list'}</button><a href="mailto:hello@agentail.ai" data-testid="link-footer-email" className="hover:text-[var(--orange)]">hello@agentail.ai</a></div></div>
           </div>
         </div>
-        <div className="flex flex-col justify-between gap-3 pt-7 font-mono text-[9px] uppercase tracking-[.13em] text-[var(--muted-ink)] sm:flex-row"><span>© 2025 Agentail, Inc.</span><span>Made for work with a little more room</span></div>
+        <div className="flex flex-col justify-between gap-3 pt-7 font-mono text-[9px] uppercase tracking-[.13em] text-[var(--muted-ink)] sm:flex-row"><span>© 2025 Agentail, Inc.</span><span>{lang === 'ko' ? '일할 여유를 조금 더 만들기 위해' : 'Made for work with a little more room'}</span></div>
       </div>
     </footer>
   );
 }
 
-function InterestModal({ onClose }: { onClose: () => void }) {
+function InterestModal({ onClose, lang }: { onClose: () => void; lang: Language }) {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   useEffect(() => {
@@ -412,24 +413,24 @@ function InterestModal({ onClose }: { onClose: () => void }) {
         <img src={catCafeMark} alt="" className="h-12 w-12 object-contain" />
         {!submitted ? (
           <>
-            <p className="mt-7 font-mono text-[10px] uppercase tracking-[.19em] text-[var(--orange)]">CatCafe.ai / Early table</p>
-            <h2 id="modal-title" className="mt-3 max-w-[380px] font-display text-[clamp(2.8rem,6vw,4.4rem)] leading-[.87] tracking-[-.045em]">Save a seat for your team.</h2>
-            <p className="mt-5 max-w-[400px] text-[15px] leading-6 text-[var(--muted-ink)]">Leave your email and we will send an invitation when the next workspace seats open.</p>
+            <p className="mt-7 font-mono text-[10px] uppercase tracking-[.19em] text-[var(--orange)]">{lang === 'ko' ? 'CatCafe.ai / 초기 테이블' : 'CatCafe.ai / Early table'}</p>
+            <h2 id="modal-title" className="mt-3 max-w-[380px] font-display text-[clamp(2.8rem,6vw,4.4rem)] leading-[.87] tracking-[-.045em]">{lang === 'ko' ? '팀을 위한 자리를 예약하세요.' : 'Save a seat for your team.'}</h2>
+            <p className="mt-5 max-w-[400px] text-[15px] leading-6 text-[var(--muted-ink)]">{lang === 'ko' ? '이메일을 남겨주시면 다음 워크스페이스 자리가 열릴 때 초대장을 보내드립니다.' : 'Leave your email and we will send an invitation when the next workspace seats open.'}</p>
             <form onSubmit={submit} className="mt-8">
-              <label htmlFor="interest-email" className="font-mono text-[9px] uppercase tracking-[.15em] text-[var(--muted-ink)]">Work email</label>
+              <label htmlFor="interest-email" className="font-mono text-[9px] uppercase tracking-[.15em] text-[var(--muted-ink)]">{lang === 'ko' ? '회사 이메일' : 'Work email'}</label>
               <div className="mt-2 flex flex-col gap-3 sm:flex-row">
                 <input id="interest-email" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} data-testid="input-interest-email" placeholder="you@company.com" className="min-w-0 flex-1 rounded-full border border-[var(--line)] bg-[var(--paper-deep)] px-5 py-3.5 text-sm outline-none placeholder:text-[var(--muted-ink)]/60 focus:border-[var(--orange)]" />
-                <button type="submit" data-testid="button-interest-submit" className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--ink)] px-5 py-3.5 text-sm font-semibold text-[var(--paper)]">I’m in <Send size={14} /></button>
+                <button type="submit" data-testid="button-interest-submit" className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--ink)] px-5 py-3.5 text-sm font-semibold text-[var(--paper)]">{lang === 'ko' ? '신청하기' : 'I’m in'} <Send size={14} /></button>
               </div>
             </form>
-            <p className="mt-5 font-mono text-[9px] uppercase tracking-[.12em] text-[var(--muted-ink)]">No spam. Just a note when the door opens.</p>
+            <p className="mt-5 font-mono text-[9px] uppercase tracking-[.12em] text-[var(--muted-ink)]">{lang === 'ko' ? '스팸 없이, 문이 열릴 때만 알려드립니다.' : 'No spam. Just a note when the door opens.'}</p>
           </>
         ) : (
           <div data-testid="status-interest-success">
-            <p className="mt-7 font-mono text-[10px] uppercase tracking-[.19em] text-[var(--orange)]">Seat requested</p>
-            <h2 id="modal-title" className="mt-3 font-display text-[clamp(2.8rem,6vw,4.4rem)] leading-[.87] tracking-[-.045em]">You’re on the list.</h2>
-            <p className="mt-5 text-[15px] leading-6 text-[var(--muted-ink)]">We’ll be in touch at <strong className="text-[var(--ink)]">{email}</strong> when the cats are ready for another table.</p>
-            <button type="button" onClick={onClose} data-testid="button-interest-done" className="mt-8 inline-flex items-center gap-2 rounded-full bg-[var(--ink)] px-5 py-3.5 text-sm font-semibold text-[var(--paper)]">Close <Check size={15} /></button>
+            <p className="mt-7 font-mono text-[10px] uppercase tracking-[.19em] text-[var(--orange)]">{lang === 'ko' ? '자리 신청 완료' : 'Seat requested'}</p>
+            <h2 id="modal-title" className="mt-3 font-display text-[clamp(2.8rem,6vw,4.4rem)] leading-[.87] tracking-[-.045em]">{lang === 'ko' ? '목록에 등록되었습니다.' : 'You’re on the list.'}</h2>
+            <p className="mt-5 text-[15px] leading-6 text-[var(--muted-ink)]">{lang === 'ko' ? <>고양이들이 다음 테이블을 준비하면 <strong className="text-[var(--ink)]">{email}</strong>로 연락드리겠습니다.</> : <>We’ll be in touch at <strong className="text-[var(--ink)]">{email}</strong> when the cats are ready for another table.</>}</p>
+            <button type="button" onClick={onClose} data-testid="button-interest-done" className="mt-8 inline-flex items-center gap-2 rounded-full bg-[var(--ink)] px-5 py-3.5 text-sm font-semibold text-[var(--paper)]">{lang === 'ko' ? '닫기' : 'Close'} <Check size={15} /></button>
           </div>
         )}
       </div>
@@ -437,8 +438,9 @@ function InterestModal({ onClose }: { onClose: () => void }) {
   );
 }
 
-function Home() {
+function Home({ initialLang = 'en' }: { initialLang?: Language }) {
   const [modalOpen, setModalOpen] = useState(false);
+  const [lang, setLang] = useState<Language>(initialLang);
   useEffect(() => {
     const elements = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
@@ -448,19 +450,23 @@ function Home() {
     return () => observer.disconnect();
   }, []);
   return (
-    <main className="min-h-[100dvh]">
-      <Header onStart={() => setModalOpen(true)} />
-      <Hero onStart={() => setModalOpen(true)} />
-      <Intro />
-      <ProductSection />
-      <Model />
-      <Roster />
-      <FAQ />
-      <FinalCTA onStart={() => setModalOpen(true)} />
-      <Footer onStart={() => setModalOpen(true)} />
-      {modalOpen && <InterestModal onClose={() => setModalOpen(false)} />}
+    <main className="min-h-[100dvh]" lang={lang}>
+      <Header onStart={() => setModalOpen(true)} lang={lang} onLanguageChange={setLang} />
+      <Hero onStart={() => setModalOpen(true)} lang={lang} />
+      <Intro lang={lang} />
+      <ProductSection lang={lang} />
+      <Model lang={lang} />
+      <Roster lang={lang} />
+      <FAQ lang={lang} />
+      <FinalCTA onStart={() => setModalOpen(true)} lang={lang} />
+      <Footer onStart={() => setModalOpen(true)} lang={lang} />
+      {modalOpen && <InterestModal onClose={() => setModalOpen(false)} lang={lang} />}
     </main>
   );
+}
+
+function KoreanHome() {
+  return <Home initialLang="ko" />;
 }
 
 function RoutedErrorBoundary({ children }: { children: ReactNode }) {
@@ -469,7 +475,7 @@ function RoutedErrorBoundary({ children }: { children: ReactNode }) {
 }
 
 function Router() {
-  return <RoutedErrorBoundary><Switch><Route path="/" component={Home} /><Route component={NotFound} /></Switch></RoutedErrorBoundary>;
+  return <RoutedErrorBoundary><Switch><Route path="/" component={Home} /><Route path="/ko" component={KoreanHome} /><Route component={NotFound} /></Switch></RoutedErrorBoundary>;
 }
 
 function App() {
