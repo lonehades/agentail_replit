@@ -3,11 +3,9 @@ import cookieParser from "cookie-parser";
 import crypto from "node:crypto";
 import { eq, desc } from "drizzle-orm";
 import { db, waitlistTable } from "@workspace/db";
-import { z } from "zod";
+import { JoinWaitlistBody, WaitlistAdminLoginBody } from "@workspace/api-zod";
 
 const router: IRouter = Router();
-const waitlistInput = z.object({ email: z.string().email().transform((value) => value.trim().toLowerCase()) });
-const loginInput = z.object({ password: z.string().min(1) });
 const SESSION_MAX_AGE = 60 * 60 * 8;
 
 router.use(cookieParser());
@@ -40,13 +38,16 @@ function requireAdmin(req: Request, res: Response, next: NextFunction): void {
 }
 
 router.post("/waitlist", async (req, res): Promise<void> => {
-  const parsed = waitlistInput.safeParse(req.body);
+  const parsed = JoinWaitlistBody.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: "Please provide a valid email address." });
     return;
   }
   try {
-    const [entry] = await db.insert(waitlistTable).values(parsed.data).returning();
+    const [entry] = await db
+      .insert(waitlistTable)
+      .values({ email: parsed.data.email.trim().toLowerCase() })
+      .returning();
     res.status(201).json(entry);
   } catch (error) {
     if (error instanceof Error && error.message.includes("unique")) {
@@ -59,7 +60,7 @@ router.post("/waitlist", async (req, res): Promise<void> => {
 });
 
 router.post("/waitlist/admin/login", (req, res): void => {
-  const parsed = loginInput.safeParse(req.body);
+  const parsed = WaitlistAdminLoginBody.safeParse(req.body);
   const configuredPassword = process.env.ADMIN_PASSWORD;
   if (!configuredPassword || !parsed.success || parsed.data.password !== configuredPassword) {
     res.status(401).json({ error: "Invalid admin password." });

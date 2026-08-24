@@ -387,7 +387,7 @@ function Footer({ onStart, lang }: { onStart: () => void; lang: Language }) {
          <div><AgentailLogo /><p className="mt-5 max-w-[280px] text-[14px] leading-6 text-[var(--muted-ink)]">{lang === 'ko' ? 'Agentail은 AI 에이전트로 이루어진 자동화 회사입니다. CatCafe.ai에서 시작합니다.' : 'Agentail is an automation company made of AI agents. CatCafe.ai is where we are starting.'}</p></div>
           <div className="flex gap-16">
              <div><p className="font-mono text-[9px] uppercase tracking-[.18em] text-[var(--muted-ink)]">{lang === 'ko' ? '둘러보기' : 'Explore'}</p><div className="mt-4 flex flex-col gap-3 text-sm font-medium"><a href="#catcafe" data-testid="link-footer-catcafe" className="hover:text-[var(--orange)]">CatCafe.ai</a><a href="#agents" data-testid="link-footer-agents" className="hover:text-[var(--orange)]">{lang === 'ko' ? '에이전트 소개' : 'Meet the agents'}</a><a href="#model" data-testid="link-footer-model" className="hover:text-[var(--orange)]">{lang === 'ko' ? '작동 방식' : 'How it works'}</a><a href="#faq" data-testid="link-footer-faq" className="hover:text-[var(--orange)]">{lang === 'ko' ? '자주 묻는 질문' : 'Questions'}</a></div></div>
-            <div><p className="font-mono text-[9px] uppercase tracking-[.18em] text-[var(--muted-ink)]">{lang === 'ko' ? '문의' : 'Say hello'}</p><div className="mt-4 flex flex-col gap-3 text-sm font-medium"><button type="button" onClick={onStart} data-testid="button-footer-contact" className="text-left hover:text-[var(--orange)]">{lang === 'ko' ? '대기 목록 등록' : 'Join the list'}</button><a href="mailto:hello@agentail.ai" data-testid="link-footer-email" className="hover:text-[var(--orange)]">hello@agentail.ai</a></div></div>
+            <div><p className="font-mono text-[9px] uppercase tracking-[.18em] text-[var(--muted-ink)]">{lang === 'ko' ? '얼리 액세스' : 'Early access'}</p><div className="mt-4 flex flex-col gap-3 text-sm font-medium"><button type="button" onClick={onStart} data-testid="button-footer-contact" className="text-left hover:text-[var(--orange)]">{lang === 'ko' ? '대기 목록 등록' : 'Join the list'}</button></div></div>
           </div>
         </div>
         <div className="flex flex-col justify-between gap-3 pt-7 font-mono text-[9px] uppercase tracking-[.13em] text-[var(--muted-ink)] sm:flex-row"><span>© 2026 Agentail, Inc.</span><span>{lang === 'ko' ? '일할 여유를 조금 더 만들기 위해' : 'Made for work with a little more room'}</span></div>
@@ -399,13 +399,37 @@ function Footer({ onStart, lang }: { onStart: () => void; lang: Language }) {
 function InterestModal({ onClose, lang }: { onClose: () => void; lang: Language }) {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => { if (event.key === 'Escape') onClose(); };
     document.addEventListener('keydown', onKeyDown);
     document.body.style.overflow = 'hidden';
     return () => { document.removeEventListener('keydown', onKeyDown); document.body.style.overflow = ''; };
   }, [onClose]);
-  const submit = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); if (email.trim()) setSubmitted(true); };
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!email.trim() || submitting) return;
+    setSubmitting(true);
+    setError('');
+    try {
+      const response = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (response.ok) {
+        setSubmitted(true);
+        return;
+      }
+      const data = await response.json().catch(() => null) as { error?: string } | null;
+      setError(data?.error ?? (lang === 'ko' ? '등록할 수 없습니다. 잠시 후 다시 시도해 주세요.' : 'We could not add you right now. Please try again.'));
+    } catch {
+      setError(lang === 'ko' ? '연결할 수 없습니다. 잠시 후 다시 시도해 주세요.' : 'We could not connect. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
   return (
     <div className="modal-backdrop fixed inset-0 z-50 flex items-end justify-center bg-[var(--ink)]/65 p-3 backdrop-blur-sm sm:items-center sm:p-6" role="dialog" aria-modal="true" aria-labelledby="modal-title" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
       <div className="modal-panel relative w-full max-w-[520px] overflow-hidden bg-[var(--paper)] p-7 sm:p-10">
@@ -420,9 +444,10 @@ function InterestModal({ onClose, lang }: { onClose: () => void; lang: Language 
               <label htmlFor="interest-email" className="font-mono text-[9px] uppercase tracking-[.15em] text-[var(--muted-ink)]">{lang === 'ko' ? '회사 이메일' : 'Work email'}</label>
               <div className="mt-2 flex flex-col gap-3 sm:flex-row">
                 <input id="interest-email" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} data-testid="input-interest-email" placeholder="you@company.com" className="min-w-0 flex-1 rounded-full border border-[var(--line)] bg-[var(--paper-deep)] px-5 py-3.5 text-sm outline-none placeholder:text-[var(--muted-ink)]/60 focus:border-[var(--orange)]" />
-                <button type="submit" data-testid="button-interest-submit" className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--ink)] px-5 py-3.5 text-sm font-semibold text-[var(--paper)]">{lang === 'ko' ? '신청하기' : 'I’m in'} <Send size={14} /></button>
+                <button type="submit" disabled={submitting} data-testid="button-interest-submit" className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--ink)] px-5 py-3.5 text-sm font-semibold text-[var(--paper)] disabled:cursor-not-allowed disabled:opacity-60">{submitting ? (lang === 'ko' ? '등록 중…' : 'Joining…') : (lang === 'ko' ? '신청하기' : 'I’m in')} <Send size={14} /></button>
               </div>
             </form>
+            {error && <p role="alert" className="mt-3 text-sm font-medium text-red-700">{error}</p>}
             <p className="mt-5 font-mono text-[9px] uppercase tracking-[.12em] text-[var(--muted-ink)]">{lang === 'ko' ? '스팸 없이, 문이 열릴 때만 알려드립니다.' : 'No spam. Just a note when the door opens.'}</p>
           </>
         ) : (
@@ -473,13 +498,103 @@ function EnglishHome() {
   return <Home />;
 }
 
+type WaitlistEntry = { id: number; email: string; createdAt: string };
+
+function WaitlistAdmin() {
+  const [, navigate] = useLocation();
+  const [password, setPassword] = useState('');
+  const [entries, setEntries] = useState<WaitlistEntry[]>([]);
+  const [authenticated, setAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const loadEntries = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const response = await fetch('/api/waitlist/admin', { credentials: 'include' });
+      if (response.status === 401) {
+        setAuthenticated(false);
+        return;
+      }
+      if (!response.ok) throw new Error();
+      const data = await response.json() as WaitlistEntry[];
+      setEntries(data);
+      setAuthenticated(true);
+    } catch {
+      setError('대기 목록을 불러올 수 없습니다. 잠시 후 다시 시도해 주세요.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signIn = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!password || loading) return;
+    setLoading(true);
+    setError('');
+    try {
+      const response = await fetch('/api/waitlist/admin/login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+      if (!response.ok) {
+        setError('비밀번호가 올바르지 않습니다.');
+        return;
+      }
+      setPassword('');
+      await loadEntries();
+    } catch {
+      setError('로그인할 수 없습니다. 잠시 후 다시 시도해 주세요.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { void loadEntries(); }, []);
+
+  return (
+    <main className="min-h-[100dvh] bg-[var(--paper)] px-5 py-8 text-[var(--ink)] sm:px-8 sm:py-12">
+      <div className="mx-auto max-w-[940px]">
+        <button type="button" onClick={() => navigate('/')} className="font-mono text-[10px] uppercase tracking-[.16em] text-[var(--muted-ink)] hover:text-[var(--ink)]">← Agentail.ai</button>
+        <div className="mt-12 border-y border-[var(--line)] py-8 sm:flex sm:items-end sm:justify-between">
+          <div><p className="font-mono text-[10px] uppercase tracking-[.18em] text-[var(--orange)]">Admin / Waitlist</p><h1 className="mt-4 font-display text-[clamp(3rem,6vw,5.5rem)] leading-[.86] tracking-[-.05em]">대기 목록</h1></div>
+          {authenticated && <button type="button" onClick={() => void loadEntries()} disabled={loading} className="mt-6 rounded-full border border-[var(--line)] px-5 py-3 text-sm font-semibold hover:bg-[var(--paper-deep)] disabled:opacity-50 sm:mt-0">새로고침</button>}
+        </div>
+        {!authenticated ? (
+          <section className="mt-12 max-w-md border border-[var(--line)] bg-[var(--paper-deep)] p-6 sm:p-8">
+            <p className="font-mono text-[10px] uppercase tracking-[.16em] text-[var(--muted-ink)]">Restricted access</p>
+            <h2 className="mt-3 font-display text-4xl tracking-[-.04em]">관리자 로그인</h2>
+            <form onSubmit={signIn} className="mt-7">
+              <label htmlFor="admin-password" className="text-sm font-semibold">관리자 비밀번호</label>
+              <input id="admin-password" type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} className="mt-2 w-full border border-[var(--line)] bg-[var(--paper)] px-4 py-3 text-sm outline-none focus:border-[var(--ink)]" required />
+              <button type="submit" disabled={loading} className="mt-4 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-semibold text-[var(--paper)] disabled:opacity-50">{loading ? '확인 중…' : '로그인'}</button>
+            </form>
+            {error && <p role="alert" className="mt-4 text-sm font-medium text-red-700">{error}</p>}
+          </section>
+        ) : (
+          <section className="mt-10">
+            <div className="flex items-center justify-between"><p className="font-mono text-[10px] uppercase tracking-[.16em] text-[var(--muted-ink)]">{entries.length} registrations</p></div>
+            {error && <p role="alert" className="mt-4 text-sm font-medium text-red-700">{error}</p>}
+            <div className="mt-5 overflow-hidden border border-[var(--line)]">
+              {entries.length === 0 ? <p className="p-7 text-sm text-[var(--muted-ink)]">아직 등록된 이메일이 없습니다.</p> : entries.map((entry) => <div key={entry.id} className="flex flex-col gap-1 border-b border-[var(--line)] px-5 py-4 last:border-b-0 sm:flex-row sm:items-center sm:justify-between"><span className="text-sm font-semibold">{entry.email}</span><time className="font-mono text-[10px] uppercase tracking-[.12em] text-[var(--muted-ink)]">{new Intl.DateTimeFormat('ko-KR', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(entry.createdAt))}</time></div>)}
+            </div>
+          </section>
+        )}
+      </div>
+    </main>
+  );
+}
+
 function RoutedErrorBoundary({ children }: { children: ReactNode }) {
   const [location] = useLocation();
   return <ErrorBoundary resetKey={location}>{children}</ErrorBoundary>;
 }
 
 function Router() {
-  return <RoutedErrorBoundary><Switch><Route path="/" component={EnglishHome} /><Route path="/ko" component={KoreanHome} /><Route component={NotFound} /></Switch></RoutedErrorBoundary>;
+  return <RoutedErrorBoundary><Switch><Route path="/" component={EnglishHome} /><Route path="/ko" component={KoreanHome} /><Route path="/admin/waitlist" component={WaitlistAdmin} /><Route component={NotFound} /></Switch></RoutedErrorBoundary>;
 }
 
 function App() {
