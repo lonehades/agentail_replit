@@ -502,7 +502,7 @@ type WaitlistEntry = { id: number; email: string; createdAt: string };
 
 function WaitlistAdmin() {
   const [, navigate] = useLocation();
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
   const [entries, setEntries] = useState<WaitlistEntry[]>([]);
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -530,7 +530,7 @@ function WaitlistAdmin() {
 
   const signIn = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!password || loading) return;
+    if (!email || loading) return;
     setLoading(true);
     setError('');
     try {
@@ -538,13 +538,13 @@ function WaitlistAdmin() {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ email }),
       });
       if (!response.ok) {
-        setError('비밀번호가 올바르지 않습니다.');
+        setError('승인된 이메일 주소가 아닙니다.');
         return;
       }
-      setPassword('');
+      setEmail('');
       await loadEntries();
     } catch {
       setError('로그인할 수 없습니다. 잠시 후 다시 시도해 주세요.');
@@ -566,11 +566,11 @@ function WaitlistAdmin() {
         {!authenticated ? (
           <section className="mt-12 max-w-md border border-[var(--line)] bg-[var(--paper-deep)] p-6 sm:p-8">
             <p className="font-mono text-[10px] uppercase tracking-[.16em] text-[var(--muted-ink)]">Restricted access</p>
-            <h2 className="mt-3 font-display text-4xl tracking-[-.04em]">관리자 로그인</h2>
+            <h2 className="mt-3 font-display text-4xl tracking-[-.04em]">관리자 입장</h2>
             <form onSubmit={signIn} className="mt-7">
-              <label htmlFor="admin-password" className="text-sm font-semibold">관리자 비밀번호</label>
-              <input id="admin-password" type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} className="mt-2 w-full border border-[var(--line)] bg-[var(--paper)] px-4 py-3 text-sm outline-none focus:border-[var(--ink)]" required />
-              <button type="submit" disabled={loading} className="mt-4 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-semibold text-[var(--paper)] disabled:opacity-50">{loading ? '확인 중…' : '로그인'}</button>
+              <label htmlFor="admin-email" className="text-sm font-semibold">관리자 이메일</label>
+              <input id="admin-email" type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} className="mt-2 w-full border border-[var(--line)] bg-[var(--paper)] px-4 py-3 text-sm outline-none focus:border-[var(--ink)]" required />
+              <button type="submit" disabled={loading} className="mt-4 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-semibold text-[var(--paper)] disabled:opacity-50">{loading ? '확인 중…' : '입장하기'}</button>
             </form>
             {error && <p role="alert" className="mt-4 text-sm font-medium text-red-700">{error}</p>}
           </section>

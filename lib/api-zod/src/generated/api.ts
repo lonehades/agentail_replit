@@ -35,7 +35,7 @@ export const JoinWaitlistResponse = zod.object({
  * @summary Sign in to the waitlist admin
  */
 export const WaitlistAdminLoginBody = zod.object({
-  "password": zod.string()
+  "email": zod.email()
 })
 
 export const WaitlistAdminLoginResponse = zod.object({

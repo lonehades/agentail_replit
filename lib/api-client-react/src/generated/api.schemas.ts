@@ -20,7 +20,7 @@ export interface WaitlistEntry {
 }
 
 export interface AdminLoginInput {
-  password: string;
+  email: string;
 }
 
 export interface AdminLoginResponse {

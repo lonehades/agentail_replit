@@ -61,9 +61,12 @@ router.post("/waitlist", async (req, res): Promise<void> => {
 
 router.post("/waitlist/admin/login", (req, res): void => {
   const parsed = WaitlistAdminLoginBody.safeParse(req.body);
-  const configuredPassword = process.env.ADMIN_PASSWORD;
-  if (!configuredPassword || !parsed.success || parsed.data.password !== configuredPassword) {
-    res.status(401).json({ error: "Invalid admin password." });
+  const configuredEmails = (process.env.ADMIN_EMAILS ?? "")
+    .split(",")
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean);
+  if (!parsed.success || !configuredEmails.includes(parsed.data.email.trim().toLowerCase())) {
+    res.status(401).json({ error: "This email is not authorized." });
     return;
   }
   res.cookie("waitlist_admin", sessionToken(), {

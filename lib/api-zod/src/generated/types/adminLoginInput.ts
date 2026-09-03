@@ -7,5 +7,5 @@
  */
 
 export interface AdminLoginInput {
-  password: string;
+  email: string;
 }

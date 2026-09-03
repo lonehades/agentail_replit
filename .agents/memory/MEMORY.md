@@ -1,0 +1,1 @@
+- [Zod code generation compatibility](zod-codegen-compatibility.md) — Orval output in this workspace must use the Zod 4 compatibility export path.

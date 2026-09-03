@@ -117,10 +117,11 @@ components:
     AdminLoginInput:
       type: object
       properties:
-        password:
+        email:
           type: string
+          format: email
       required:
-        - password
+        - email
     AdminLoginResponse:
       type: object
       properties:
