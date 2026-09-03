@@ -46,26 +46,6 @@ paths:
                 $ref: "#/components/schemas/WaitlistEntry"
         "409":
           description: Email is already registered
-  /waitlist/admin/login:
-    post:
-      operationId: waitlistAdminLogin
-      tags: [waitlist]
-      summary: Sign in to the waitlist admin
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/AdminLoginInput"
-      responses:
-        "200":
-          description: Signed in
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AdminLoginResponse"
-        "401":
-          description: Invalid credentials
   /waitlist/admin:
     get:
       operationId: listWaitlist
@@ -114,19 +94,4 @@ components:
         - id
         - email
         - createdAt
-    AdminLoginInput:
-      type: object
-      properties:
-        email:
-          type: string
-          format: email
-      required:
-        - email
-    AdminLoginResponse:
-      type: object
-      properties:
-        authenticated:
-          type: boolean
-      required:
-        - authenticated
 

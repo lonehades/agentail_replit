@@ -19,11 +19,3 @@ export interface WaitlistEntry {
   createdAt: string;
 }
 
-export interface AdminLoginInput {
-  email: string;
-}
-
-export interface AdminLoginResponse {
-  authenticated: boolean;
-}
-

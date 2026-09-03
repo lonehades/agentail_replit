@@ -20,8 +20,6 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  AdminLoginInput,
-  AdminLoginResponse,
   HealthStatus,
   WaitlistEntry,
   WaitlistInput
@@ -201,77 +199,6 @@ export const useJoinWaitlist = <TError = ErrorType<void>,
         TContext
       > => {
       return useMutation(getJoinWaitlistMutationOptions(options));
-    }
-
-export const getWaitlistAdminLoginUrl = () => {
-
-
-
-
-  return `/api/waitlist/admin/login`
-}
-
-/**
- * @summary Sign in to the waitlist admin
- */
-export const waitlistAdminLogin = async (adminLoginInput: AdminLoginInput, options?: Parameters<typeof customFetch>[1]): Promise<AdminLoginResponse> => {
-
-  return customFetch<AdminLoginResponse>(getWaitlistAdminLoginUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(adminLoginInput)
-  }
-);}
-
-
-
-
-
-export const getWaitlistAdminLoginMutationOptions = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof waitlistAdminLogin>>, TError,{data: BodyType<AdminLoginInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof waitlistAdminLogin>>, TError,{data: BodyType<AdminLoginInput>}, TContext> => {
-
-const mutationKey = ['waitlistAdminLogin'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof waitlistAdminLogin>>, {data: BodyType<AdminLoginInput>}> = (props) => {
-          const {data} = props ?? {};
-
-          return  waitlistAdminLogin(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type WaitlistAdminLoginMutationResult = NonNullable<Awaited<ReturnType<typeof waitlistAdminLogin>>>
-    export type WaitlistAdminLoginMutationBody = BodyType<AdminLoginInput>
-    export type WaitlistAdminLoginMutationError = ErrorType<void>
-
-    /**
- * @summary Sign in to the waitlist admin
- */
-export const useWaitlistAdminLogin = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof waitlistAdminLogin>>, TError,{data: BodyType<AdminLoginInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
- ): UseMutationResult<
-        Awaited<ReturnType<typeof waitlistAdminLogin>>,
-        TError,
-        {data: BodyType<AdminLoginInput>},
-        TContext
-      > => {
-      return useMutation(getWaitlistAdminLoginMutationOptions(options));
     }
 
 export const getListWaitlistUrl = () => {

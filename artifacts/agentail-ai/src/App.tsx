@@ -1,5 +1,8 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ClerkProvider, SignIn, useClerk, useUser } from '@clerk/react';
+import { publishableKeyFromHost } from '@clerk/react/internal';
+import { shadcn } from '@clerk/themes';
 import {
   ArrowDownRight,
   ArrowRight,
@@ -30,6 +33,74 @@ import libcatAgent from '@assets/libcat-agent.png';
 import jarvisAndCats from '@assets/jarvis-and-cats.png';
 
 const queryClient = new QueryClient();
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+const clerkPubKey = publishableKeyFromHost(
+  window.location.hostname,
+  import.meta.env.VITE_CLERK_PUBLISHABLE_KEY,
+);
+const clerkProxyUrl = import.meta.env.VITE_CLERK_PROXY_URL;
+
+function stripBase(path: string): string {
+  return basePath && path.startsWith(basePath)
+    ? path.slice(basePath.length) || '/'
+    : path;
+}
+
+if (!clerkPubKey) {
+  throw new Error('Missing VITE_CLERK_PUBLISHABLE_KEY');
+}
+
+const clerkAppearance = {
+  theme: shadcn,
+  cssLayerName: 'clerk',
+  options: {
+    logoPlacement: 'inside' as const,
+    logoLinkUrl: basePath || '/',
+    logoImageUrl: `${window.location.origin}${basePath}/logo.svg`,
+    socialButtonsPlacement: 'top' as const,
+    socialButtonsVariant: 'blockButton' as const,
+  },
+  variables: {
+    colorPrimary: '#171717',
+    colorForeground: '#171717',
+    colorMutedForeground: '#6f6a61',
+    colorDanger: '#b42318',
+    colorBackground: '#f8f5ee',
+    colorInput: '#fffdf8',
+    colorInputForeground: '#171717',
+    colorNeutral: '#d1cbc0',
+    fontFamily: '"DM Sans", "Noto Sans KR", sans-serif',
+    borderRadius: '2px',
+  },
+  elements: {
+    rootBox: 'w-full flex justify-center',
+    cardBox: 'bg-[#f8f5ee] w-[440px] max-w-full overflow-hidden border border-[var(--line)]',
+    card: '!shadow-none !border-0 !bg-transparent !rounded-none',
+    footer: 'hidden',
+    headerTitle: 'text-[var(--ink)] font-semibold',
+    headerSubtitle: 'text-[var(--muted-ink)]',
+    socialButtonsBlockButtonText: 'text-[var(--ink)] font-semibold',
+    formFieldLabel: 'text-[var(--ink)] font-semibold',
+    footerActionLink: 'text-[var(--ink)] font-semibold',
+    footerActionText: 'text-[var(--muted-ink)]',
+    dividerText: 'text-[var(--muted-ink)]',
+    identityPreviewEditButton: 'text-[var(--ink)]',
+    formFieldSuccessText: 'text-green-700',
+    alertText: 'text-red-700',
+    logoBox: 'h-12',
+    logoImage: 'h-10',
+    socialButtonsBlockButton: 'border border-[var(--line)] bg-[var(--paper)] hover:bg-[var(--paper-deep)]',
+    formButtonPrimary: 'hidden',
+    formFieldInput: 'border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)]',
+    footerAction: 'hidden',
+    formFieldRow: 'hidden',
+    dividerRow: 'hidden',
+    dividerLine: 'bg-[var(--line)]',
+    alert: 'border border-red-200 bg-red-50',
+    otpCodeFieldInput: 'border-[var(--line)]',
+    main: 'gap-5',
+  },
+};
 
 type Language = 'en' | 'ko';
 
@@ -103,6 +174,7 @@ function Header({ onStart, lang, onLanguageChange }: { onStart: () => void; lang
           ))}
         </nav>
         <div className="hidden items-center gap-4 md:flex">
+           <a href={`${basePath}/admin/waitlist`} data-testid="link-header-admin" className="text-[13px] font-medium text-[var(--muted-ink)] hover:text-[var(--ink)]">Admin</a>
            <a href="https://catcafe.ai" target="_blank" rel="noreferrer" data-testid="link-header-catcafe" className="text-[13px] font-medium text-[var(--muted-ink)] hover:text-[var(--ink)]">{lang === 'ko' ? 'CatCafe 방문' : 'Visit CatCafe'}</a>
            <div className="flex items-center rounded-full border border-[var(--line)] p-0.5" aria-label="Language">
              <button type="button" onClick={() => onLanguageChange('en')} className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${lang === 'en' ? 'bg-[var(--ink)] text-[var(--paper)]' : 'text-[var(--muted-ink)]'}`}>EN</button>
@@ -121,6 +193,7 @@ function Header({ onStart, lang, onLanguageChange }: { onStart: () => void; lang
            {items.map((item) => (
             <a key={item.href} href={item.href} onClick={() => navigate(item.href)} data-testid={`link-mobile-${item.label.toLowerCase().replace(/\s+/g, '-')}`} className="block rounded-xl px-4 py-3 text-sm font-medium hover:bg-[var(--paper-deep)]">{item.label}</a>
           ))}
+            <a href={`${basePath}/admin/waitlist`} data-testid="link-mobile-admin" className="mt-1 block rounded-xl px-4 py-3 text-sm font-medium hover:bg-[var(--paper-deep)]">Admin</a>
            <a href="https://catcafe.ai" target="_blank" rel="noreferrer" data-testid="link-mobile-catcafe" className="mt-1 block rounded-xl px-4 py-3 text-sm font-medium hover:bg-[var(--paper-deep)]">{lang === 'ko' ? 'CatCafe.ai 방문' : 'Visit CatCafe.ai'}</a>
            <div className="mt-2 flex gap-2 px-4 py-2"><button type="button" onClick={() => onLanguageChange('en')} className={`rounded-full border px-3 py-1 text-xs ${lang === 'en' ? 'bg-[var(--ink)] text-[var(--paper)]' : 'border-[var(--line)]'}`}>English</button><button type="button" onClick={() => onLanguageChange('ko')} className={`rounded-full border px-3 py-1 text-xs ${lang === 'ko' ? 'bg-[var(--ink)] text-[var(--paper)]' : 'border-[var(--line)]'}`}>한국어</button></div>
            <button type="button" onClick={() => { setMenuOpen(false); onStart(); }} data-testid="button-mobile-start" className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--ink)] px-4 py-3 text-sm font-semibold text-[var(--paper)]">{lang === 'ko' ? '대기 목록 등록' : 'Join the list'} <ArrowRight size={15} /></button>
@@ -502,9 +575,9 @@ type WaitlistEntry = { id: number; email: string; createdAt: string };
 
 function WaitlistAdmin() {
   const [, navigate] = useLocation();
-  const [email, setEmail] = useState('');
+  const { user, isLoaded, isSignedIn } = useUser();
+  const { signOut } = useClerk();
   const [entries, setEntries] = useState<WaitlistEntry[]>([]);
-  const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -514,13 +587,16 @@ function WaitlistAdmin() {
     try {
       const response = await fetch('/api/waitlist/admin', { credentials: 'include' });
       if (response.status === 401) {
-        setAuthenticated(false);
+        navigate('/sign-in');
+        return;
+      }
+      if (response.status === 403) {
+        setError('이 Google 계정에는 관리자 권한이 없습니다.');
         return;
       }
       if (!response.ok) throw new Error();
       const data = await response.json() as WaitlistEntry[];
       setEntries(data);
-      setAuthenticated(true);
     } catch {
       setError('대기 목록을 불러올 수 없습니다. 잠시 후 다시 시도해 주세요.');
     } finally {
@@ -528,32 +604,18 @@ function WaitlistAdmin() {
     }
   };
 
-  const signIn = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!email || loading) return;
-    setLoading(true);
-    setError('');
-    try {
-      const response = await fetch('/api/waitlist/admin/login', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-      if (!response.ok) {
-        setError('승인된 이메일 주소가 아닙니다.');
-        return;
-      }
-      setEmail('');
-      await loadEntries();
-    } catch {
-      setError('로그인할 수 없습니다. 잠시 후 다시 시도해 주세요.');
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (!isLoaded) return;
+    if (!isSignedIn) {
+      navigate('/sign-in');
+      return;
     }
-  };
+    void loadEntries();
+  }, [isLoaded, isSignedIn]);
 
-  useEffect(() => { void loadEntries(); }, []);
+  if (!isLoaded || (isSignedIn && loading && entries.length === 0 && !error)) {
+    return <main className="flex min-h-[100dvh] items-center justify-center bg-[var(--paper)] text-sm text-[var(--muted-ink)]">관리자 정보를 확인하고 있습니다…</main>;
+  }
 
   return (
     <main className="min-h-[100dvh] bg-[var(--paper)] px-5 py-8 text-[var(--ink)] sm:px-8 sm:py-12">
@@ -561,28 +623,32 @@ function WaitlistAdmin() {
         <button type="button" onClick={() => navigate('/')} className="font-mono text-[10px] uppercase tracking-[.16em] text-[var(--muted-ink)] hover:text-[var(--ink)]">← Agentail.ai</button>
         <div className="mt-12 border-y border-[var(--line)] py-8 sm:flex sm:items-end sm:justify-between">
           <div><p className="font-mono text-[10px] uppercase tracking-[.18em] text-[var(--orange)]">Admin / Waitlist</p><h1 className="mt-4 font-display text-[clamp(3rem,6vw,5.5rem)] leading-[.86] tracking-[-.05em]">대기 목록</h1></div>
-          {authenticated && <button type="button" onClick={() => void loadEntries()} disabled={loading} className="mt-6 rounded-full border border-[var(--line)] px-5 py-3 text-sm font-semibold hover:bg-[var(--paper-deep)] disabled:opacity-50 sm:mt-0">새로고침</button>}
+          <div className="mt-6 flex flex-wrap items-center gap-3 sm:mt-0">
+            {user?.primaryEmailAddress?.emailAddress && <span className="text-xs text-[var(--muted-ink)]">{user.primaryEmailAddress.emailAddress}</span>}
+            <button type="button" onClick={() => void loadEntries()} disabled={loading} className="rounded-full border border-[var(--line)] px-5 py-3 text-sm font-semibold hover:bg-[var(--paper-deep)] disabled:opacity-50">새로고침</button>
+            <button type="button" onClick={() => signOut({ redirectUrl: basePath || '/' })} className="rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-semibold text-[var(--paper)]">로그아웃</button>
+          </div>
         </div>
-        {!authenticated ? (
-          <section className="mt-12 max-w-md border border-[var(--line)] bg-[var(--paper-deep)] p-6 sm:p-8">
-            <p className="font-mono text-[10px] uppercase tracking-[.16em] text-[var(--muted-ink)]">Restricted access</p>
-            <h2 className="mt-3 font-display text-4xl tracking-[-.04em]">관리자 입장</h2>
-            <form onSubmit={signIn} className="mt-7">
-              <label htmlFor="admin-email" className="text-sm font-semibold">관리자 이메일</label>
-              <input id="admin-email" type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} className="mt-2 w-full border border-[var(--line)] bg-[var(--paper)] px-4 py-3 text-sm outline-none focus:border-[var(--ink)]" required />
-              <button type="submit" disabled={loading} className="mt-4 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-semibold text-[var(--paper)] disabled:opacity-50">{loading ? '확인 중…' : '입장하기'}</button>
-            </form>
-            {error && <p role="alert" className="mt-4 text-sm font-medium text-red-700">{error}</p>}
-          </section>
-        ) : (
-          <section className="mt-10">
+        <section className="mt-10">
+            {error && <div className="border border-red-200 bg-red-50 p-6"><p role="alert" className="text-sm font-medium text-red-700">{error}</p><button type="button" onClick={() => signOut({ redirectUrl: `${basePath}/sign-in` })} className="mt-4 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-semibold text-[var(--paper)]">다른 Google 계정으로 로그인</button></div>}
+            {!error && <>
             <div className="flex items-center justify-between"><p className="font-mono text-[10px] uppercase tracking-[.16em] text-[var(--muted-ink)]">{entries.length} registrations</p></div>
-            {error && <p role="alert" className="mt-4 text-sm font-medium text-red-700">{error}</p>}
             <div className="mt-5 overflow-hidden border border-[var(--line)]">
               {entries.length === 0 ? <p className="p-7 text-sm text-[var(--muted-ink)]">아직 등록된 이메일이 없습니다.</p> : entries.map((entry) => <div key={entry.id} className="flex flex-col gap-1 border-b border-[var(--line)] px-5 py-4 last:border-b-0 sm:flex-row sm:items-center sm:justify-between"><span className="text-sm font-semibold">{entry.email}</span><time className="font-mono text-[10px] uppercase tracking-[.12em] text-[var(--muted-ink)]">{new Intl.DateTimeFormat('ko-KR', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(entry.createdAt))}</time></div>)}
             </div>
+            </>}
           </section>
-        )}
+      </div>
+    </main>
+  );
+}
+
+function SignInPage() {
+  return (
+    <main className="flex min-h-[100dvh] items-center justify-center bg-[var(--paper)] px-4 py-12">
+      <div className="w-full max-w-[440px]">
+        <p className="mb-5 text-center font-mono text-[10px] uppercase tracking-[.18em] text-[var(--orange)]">Agentail Admin</p>
+        <SignIn routing="path" path={`${basePath}/sign-in`} forceRedirectUrl={`${basePath}/admin/waitlist`} />
       </div>
     </main>
   );
@@ -594,18 +660,30 @@ function RoutedErrorBoundary({ children }: { children: ReactNode }) {
 }
 
 function Router() {
-  return <RoutedErrorBoundary><Switch><Route path="/" component={EnglishHome} /><Route path="/ko" component={KoreanHome} /><Route path="/admin/waitlist" component={WaitlistAdmin} /><Route component={NotFound} /></Switch></RoutedErrorBoundary>;
+  return <RoutedErrorBoundary><Switch><Route path="/" component={EnglishHome} /><Route path="/ko" component={KoreanHome} /><Route path="/sign-in/*?" component={SignInPage} /><Route path="/admin/waitlist" component={WaitlistAdmin} /><Route component={NotFound} /></Switch></RoutedErrorBoundary>;
+}
+
+function ClerkProviderWithRoutes() {
+  const [, setLocation] = useLocation();
+  return (
+    <ClerkProvider
+      publishableKey={clerkPubKey}
+      proxyUrl={clerkProxyUrl}
+      appearance={clerkAppearance}
+      signInUrl={`${basePath}/sign-in`}
+      routerPush={(to) => setLocation(stripBase(to))}
+      routerReplace={(to) => setLocation(stripBase(to), { replace: true })}
+      localization={{ signIn: { start: { title: '관리자 로그인', subtitle: '승인된 Google 계정으로 계속하세요' } } }}
+    >
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider><Router /><Toaster /></TooltipProvider>
+      </QueryClientProvider>
+    </ClerkProvider>
+  );
 }
 
 function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}><Router /></WouterRouter>
-        <Toaster />
-      </TooltipProvider>
-    </QueryClientProvider>
-  );
+  return <WouterRouter base={basePath}><ClerkProviderWithRoutes /></WouterRouter>;
 }
 
 export default App;
